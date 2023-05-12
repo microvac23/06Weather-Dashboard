@@ -1,3 +1,6 @@
+// WORKS ON LIVE SERVER
+// NEEDS WORK ON ASYNCHRONOUS EVENT HANDLING
+
 //DOM Element selectors
 var searchCity = $('#searchInput')
 var searchLog = $('#searchLog')
