@@ -63,7 +63,7 @@ searchCity.on("keyup", function(event) {
 
         //Searches openweather api for search entry city lat and lon
         function runCity() { 
-            var weatherLoc = `http://api.openweathermap.org/geo/1.0/direct?q=${localStorage.getItem("Search-Entry")}&limit=5&appid=6f64034fc295dc68d6c827ea1f2dc4d8`
+            var weatherLoc = `https://api.openweathermap.org/geo/1.0/direct?q=${localStorage.getItem("Search-Entry")}&limit=5&appid=6f64034fc295dc68d6c827ea1f2dc4d8`
              
             fetch(weatherLoc)
                 .then(response => {
@@ -100,7 +100,7 @@ $('#searchLog').on("click", searchHistoryEl, function(event){
 
         //Searches openweather api for recalled entry city lat and lon
         function recallCity() { 
-            var weatherLoc = `http://api.openweathermap.org/geo/1.0/direct?q=${localStorage.getItem("recallEntry")}&limit=5&appid=6f64034fc295dc68d6c827ea1f2dc4d8`
+            var weatherLoc = `https://api.openweathermap.org/geo/1.0/direct?q=${localStorage.getItem("recallEntry")}&limit=5&appid=6f64034fc295dc68d6c827ea1f2dc4d8`
              
             fetch(weatherLoc)
                 .then(response => {
@@ -119,7 +119,7 @@ $('#searchLog').on("click", searchHistoryEl, function(event){
         ////Current day data transfer to DOM
         searchResult.text(`${localStorage.getItem("cityName")} ${localStorage.getItem("currentDate")}`)
         description.text(`${localStorage.getItem("currentDescr")} `)
-        icon.attr("src", `http://openweathermap.org/img/w/${localStorage.getItem("currentIcon")}.png`)
+        icon.attr("src", `https://openweathermap.org/img/w/${localStorage.getItem("currentIcon")}.png`)
         temp.text(`Temperature: ${localStorage.getItem("currentTemp")}°F`)    
         humidity.text(`Humidity: ${localStorage.getItem("currentHumidity")}%`)  
         wind.text(`Wind Speed: ${localStorage.getItem("currentWind")} mph`)
