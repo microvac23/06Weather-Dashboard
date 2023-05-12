@@ -17,7 +17,7 @@ then I am presented with the city name, the date, an icon representation of weat
 then I am presented with a 5-day forecast that displays the date, an icon representation of weather conditions, the temperature, the wind speed, and the humidity.
 <br>When I click on a city in the search history then I am again presented with current and future conditions for that city
 
-Website Link:
+Website Link: https://microvac23.github.io/06Weather-Dashboard/
 
 Website Screenshot:
 ![alt text](./assets/pictures/Screenshot%202023-05-11%20231715.png)

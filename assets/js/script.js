@@ -1,3 +1,4 @@
+//DOM Element selectors
 var searchCity = $('#searchInput')
 var searchLog = $('#searchLog')
 var searchResult = $('#city')
@@ -9,10 +10,12 @@ var humidity = $('#humidity')
 
 document.addEventListener("DOMContentLoaded", function(event){
 
+// Function will fetch current and future weather and store the results in local storage.
 function runWeather() { 
 var weatherApi = `https://api.openweathermap.org/data/2.5/forecast?lat=${localStorage.getItem("Search-Lat")}&lon=${localStorage.getItem("Search-Lon")}&appid=6f64034fc295dc68d6c827ea1f2dc4d8`
 var currentApi = `https://api.openweathermap.org/data/2.5/weather?lat=${localStorage.getItem("Search-Lat")}&lon=${localStorage.getItem("Search-Lon")}&appid=6f64034fc295dc68d6c827ea1f2dc4d8`
 
+//Current day data
 fetch(currentApi)
         .then(response => {
             return response.json()
@@ -28,15 +31,14 @@ fetch(currentApi)
             localStorage.setItem("currentIcon", data.weather[0].icon)
         })
 
-
+//5 day projection data
 fetch(weatherApi)
         .then(response => {
             return response.json()
         })
         .then(data => {
             console.log(data)
-/*          console.log([ddata.list[0]}, {data.list[6]}, {data.list[14]}, {data.list[22]}, {data.list[30]}]);
- */         localStorage.setItem("dayList", ({D1: data.list[0], D2: data.list[6], D3: data.list[14], D4: data.list[22], D5: data.list[30]}))
+            console.log(({D1: data.list[0], D2: data.list[6], D3: data.list[14], D4: data.list[22], D5: data.list[30]}))
             localStorage.setItem("futureDate", (dayjs(data.list[0].dt_txt).format('YYYY-MM-DD')))
             localStorage.setItem("futureTemp", ((data.list[0].main.feels_like - 273.15) * 9/5 + 32).toFixed(2))
             localStorage.setItem("futureHumidity", data.list[0].main.humidity)
@@ -47,6 +49,7 @@ fetch(weatherApi)
     
 }
 
+//Detects entry when enter key is used in the search input field
 searchCity.on("keyup", function(event) {
     if(event.keyCode === 13) {
         event.preventDefault()
@@ -54,9 +57,11 @@ searchCity.on("keyup", function(event) {
         var searchHistoryAp = searchCity.val();
         localStorage.setItem("Search-Entry", searchHistoryAp)
 
+        //Appends entry to search history log
         var historyEL = $(`<button class="col-12 searchHistory"> ${localStorage.getItem("Search-Entry")} </button>`)
         searchLog.append(historyEL)
 
+        //Searches openweather api for search entry city lat and lon
         function runCity() { 
             var weatherLoc = `http://api.openweathermap.org/geo/1.0/direct?q=${localStorage.getItem("Search-Entry")}&limit=5&appid=6f64034fc295dc68d6c827ea1f2dc4d8`
              
@@ -73,7 +78,8 @@ searchCity.on("keyup", function(event) {
 
         runCity()
         runWeather()
-
+        
+        //Current day data transfer to DOM
         searchResult.text(`${localStorage.getItem("cityName")} ${localStorage.getItem("currentDate")}`)
         description.text(`${localStorage.getItem("currentDescr")} `)
         icon.attr("src", `http://openweathermap.org/img/w/${localStorage.getItem("currentIcon")}.png`)
@@ -84,6 +90,7 @@ searchCity.on("keyup", function(event) {
     event.stopPropagation()
 })
 
+//Detects when a logged entry button is clicked
 var searchHistoryEl = $('.searchHistory')
 $('#searchLog').on("click", searchHistoryEl, function(event){
     console.log("hello");
@@ -91,6 +98,7 @@ $('#searchLog').on("click", searchHistoryEl, function(event){
     console.log(searchHistory);
         localStorage.setItem("recallEntry", searchHistory)
 
+        //Searches openweather api for recalled entry city lat and lon
         function recallCity() { 
             var weatherLoc = `http://api.openweathermap.org/geo/1.0/direct?q=${localStorage.getItem("recallEntry")}&limit=5&appid=6f64034fc295dc68d6c827ea1f2dc4d8`
              
@@ -107,7 +115,8 @@ $('#searchLog').on("click", searchHistoryEl, function(event){
 
         recallCity()
         runWeather()
-
+        
+        ////Current day data transfer to DOM
         searchResult.text(`${localStorage.getItem("cityName")} ${localStorage.getItem("currentDate")}`)
         description.text(`${localStorage.getItem("currentDescr")} `)
         icon.attr("src", `http://openweathermap.org/img/w/${localStorage.getItem("currentIcon")}.png`)
