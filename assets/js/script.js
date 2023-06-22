@@ -95,7 +95,7 @@ searchCity.on("keyup", function(event) {
 
 //Detects when a logged entry button is clicked
 var searchHistoryEl = $('.searchHistory')
-$('#searchLog').on("click", searchHistoryEl, function(event){
+$('#searchLog').on("click", searchHistoryEl, async function(event){
     console.log("hello");
     var searchHistory = event.target.textContent;
     console.log(searchHistory);
