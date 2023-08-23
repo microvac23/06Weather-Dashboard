@@ -1,5 +1,3 @@
-// WORKS ON LIVE SERVER BUT NOT GITHUB PAGE
-// NEEDS WORK ON ASYNCHRONOUS EVENT HANDLING
 
 //DOM Element selectors
 var searchCity = $('#searchInput')
