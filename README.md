@@ -20,7 +20,7 @@ then I am presented with a 5-day forecast that displays the date, an icon repres
 ## Technologies
 
 OpenWeatherMap API: https://openweathermap.org/api
-DayJs: https://day.js.org/
+<br>DayJs: https://day.js.org/
 
 Website Link: https://microvac23.github.io/06Weather-Dashboard/
 
