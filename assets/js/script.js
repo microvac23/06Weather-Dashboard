@@ -1,3 +1,5 @@
+//NEEDS WORK ON ASYNCRONOUS EVENT HANDLING
+
 
 //DOM Element selectors
 var searchCity = $('#searchInput')
@@ -66,6 +68,7 @@ const setFiveDays = function (data) {
 
         fiveHumidities = [data.list[0].main.humidity, data.list[8].main.humidity, data.list[16].main.humidity, data.list[24].main.humidity, data.list[32].main.humidity]
 
+        //populates html text with data
         for(i=0; i < nextFiveDates.length; i++) {
             nextFiveDates[i].text(fiveDates[i])
             nextFiveTemps[i].text(`Temp: ${fiveTemps[i]}°F`)
