@@ -10,13 +10,24 @@ var icon = $('#icon')
 var temp = $('#temp')
 var wind = $('#wind')
 var humidity = $('#humidity')
+var nextFiveDates = [$('#date1'), $('#date2'), $('#date3'), $('#date4'), $('#date5')]
+var nextFiveTemps = [$('#temp1'), $('#temp2'), $('#temp3'), $('#temp4'), $('#temp5')]
+var nextFiveWinds = [$('#wind1'), $('#wind2'), $('#wind3'), $('#wind4'), $('#wind5')]
+var nextFiveHumidities = [$('#humidity1'), $('#humidity2'), $('#humidity3'), $('#humidity4'), $('#humidity5')]
 
 document.addEventListener("DOMContentLoaded", function(event){
 
+// Empties local storage on page reload
+window.onbeforeunload = function (e) {
+        localStorage.clear();
+    };
+
+
+
 // Function will fetch current and future weather and store the results in local storage.
-function runWeather() { 
-var weatherApi = `https://api.openweathermap.org/data/2.5/forecast?lat=${localStorage.getItem("Search-Lat")}&lon=${localStorage.getItem("Search-Lon")}&appid=6f64034fc295dc68d6c827ea1f2dc4d8`
-var currentApi = `https://api.openweathermap.org/data/2.5/weather?lat=${localStorage.getItem("Search-Lat")}&lon=${localStorage.getItem("Search-Lon")}&appid=6f64034fc295dc68d6c827ea1f2dc4d8`
+async function runWeather() { 
+var weatherApi = await `https://api.openweathermap.org/data/2.5/forecast?lat=${localStorage.getItem("Search-Lat")}&lon=${localStorage.getItem("Search-Lon")}&appid=6f64034fc295dc68d6c827ea1f2dc4d8`
+var currentApi = await `https://api.openweathermap.org/data/2.5/weather?lat=${localStorage.getItem("Search-Lat")}&lon=${localStorage.getItem("Search-Lon")}&appid=6f64034fc295dc68d6c827ea1f2dc4d8`
 
 //Current day data
 fetch(currentApi)
@@ -40,24 +51,37 @@ fetch(weatherApi)
             return response.json()
         })
         .then(data => {
-            console.log(data)
-            console.log(({D1: data.list[0], D2: data.list[6], D3: data.list[14], D4: data.list[22], D5: data.list[30]}))
-            localStorage.setItem("futureDate", (dayjs(data.list[0].dt_txt).format('YYYY-MM-DD')))
-            localStorage.setItem("futureTemp", ((data.list[0].main.feels_like - 273.15) * 9/5 + 32).toFixed(2))
-            localStorage.setItem("futureHumidity", data.list[0].main.humidity)
-            localStorage.setItem("futureDescr", data.list[0].weather[0].description)
-            localStorage.setItem("futureWind", data.list[0].wind.speed)
-            localStorage.setItem("futureIcon", data.list[0].weather[0].icon)
+            console.log('future', data)
+            
+            setFiveDays(data)
         })
     
 }
 
+//5 day projection html setting
+const setFiveDays = function (data) {
+        fiveDates = [(dayjs.unix(data.list[8].dt).format('YYYY-MM-DD')), (dayjs.unix(data.list[16].dt).format('YYYY-MM-DD')), (dayjs.unix(data.list[24].dt).format('YYYY-MM-DD')), (dayjs.unix(data.list[32].dt).format('YYYY-MM-DD')), (dayjs.unix(data.list[39].dt).format('YYYY-MM-DD'))]
+
+        fiveTemps = [((data.list[0].main.feels_like - 273.15) * 9/5 + 32).toFixed(2), ((data.list[8].main.feels_like - 273.15) * 9/5 + 32).toFixed(2), ((data.list[16].main.feels_like - 273.15) * 9/5 + 32).toFixed(2), ((data.list[24].main.feels_like - 273.15) * 9/5 + 32).toFixed(2), ((data.list[32].main.feels_like - 273.15) * 9/5 + 32).toFixed(2)]
+
+        fiveWinds = [data.list[0].wind.speed, data.list[8].wind.speed, data.list[16].wind.speed, data.list[24].wind.speed, data.list[32].wind.speed]
+
+        fiveHumidities = [data.list[0].main.humidity, data.list[8].main.humidity, data.list[16].main.humidity, data.list[24].main.humidity, data.list[32].main.humidity]
+
+        for(i=0; i < nextFiveDates.length; i++) {
+            nextFiveDates[i].text(fiveDates[i])
+            nextFiveTemps[i].text(`Temp: ${fiveTemps[i]}°F`)
+            nextFiveWinds[i].text(`Wind: ${fiveWinds[i]} mph`)
+            nextFiveHumidities[i].text(`Humidity: ${fiveHumidities[i]}%`)
+        }
+}
+
 //Detects entry when enter key is used in the search input field
-searchCity.on("keyup", function(event) {
+searchCity.on("keyup", async function(event) {
     if(event.keyCode === 13) {
         event.preventDefault()
         
-        var searchHistoryAp = searchCity.val();
+        var searchHistoryAp = await searchCity.val();
         localStorage.setItem("Search-Entry", searchHistoryAp)
 
         //Appends entry to search history log
@@ -65,8 +89,8 @@ searchCity.on("keyup", function(event) {
         searchLog.append(historyEL)
 
         //Searches openweather api for search entry city lat and lon
-        function runCity() { 
-            var weatherLoc = `https://api.openweathermap.org/geo/1.0/direct?q=${localStorage.getItem("Search-Entry")}&limit=5&appid=6f64034fc295dc68d6c827ea1f2dc4d8`
+        async function runCity() { 
+            var weatherLoc = await `https://api.openweathermap.org/geo/1.0/direct?q=${localStorage.getItem("Search-Entry")}&limit=5&appid=6f64034fc295dc68d6c827ea1f2dc4d8`
              
             fetch(weatherLoc)
                 .then(response => {
@@ -102,8 +126,8 @@ $('#searchLog').on("click", searchHistoryEl, async function(event){
         localStorage.setItem("recallEntry", searchHistory)
 
         //Searches openweather api for recalled entry city lat and lon
-        function recallCity() { 
-            var weatherLoc = `https://api.openweathermap.org/geo/1.0/direct?q=${localStorage.getItem("recallEntry")}&limit=5&appid=6f64034fc295dc68d6c827ea1f2dc4d8`
+        async function recallCity() { 
+            var weatherLoc = await `https://api.openweathermap.org/geo/1.0/direct?q=${localStorage.getItem("recallEntry")}&limit=5&appid=6f64034fc295dc68d6c827ea1f2dc4d8`
              
             fetch(weatherLoc)
                 .then(response => {
